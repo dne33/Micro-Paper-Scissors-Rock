@@ -6,7 +6,7 @@
 #include <string.h>
 #include "Ball.h"
 
-Ball_t init(uint8_t x_cord,uint8_t y_cord,uint8_t v_cord) 
+Ball_t ball_init(uint8_t x_cord,uint8_t y_cord,uint8_t v_cord) 
 {
     Ball_t new = {x_cord,y_cord,v_cord};
     return new;

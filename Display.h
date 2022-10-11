@@ -4,9 +4,10 @@
 #include "system.h"
 #include "pio.h"
 #include "pacer.h"
-#include "stdint.h"
-#include "stdio.h"
 #include <stdint.h>
+#include <stdio.h>
+#include <stdint.h>
+
 /** Define PIO pins driving LED matrix rows.  */
 static const pio_t rows[] =
 {
@@ -22,5 +23,6 @@ static const pio_t cols[] =
     LEDMAT_COL1_PIO, LEDMAT_COL2_PIO, LEDMAT_COL3_PIO,
     LEDMAT_COL4_PIO, LEDMAT_COL5_PIO
 };
+
 void display_ball (Ball_t Ball);
 #endif
