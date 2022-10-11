@@ -7,6 +7,8 @@
 #include "Ball.h"
 #include "Transmission.h"
 
+Packet
+
 void send_packet (Packet_t Spacket) 
 {
     //code here to send the packet through the IR

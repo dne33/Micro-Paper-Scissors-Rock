@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdint.h>
+#include "paddle.h"
 
 /** Define PIO pins driving LED matrix rows.  */
 static const pio_t rows[] =
@@ -25,4 +26,6 @@ static const pio_t cols[] =
 };
 
 void display_ball (Ball_t Ball);
+
+void display_paddel (Paddle_t paddle);
 #endif
