@@ -9,9 +9,9 @@
  * @param paddle pointer to paddle struct
  * @return int8_t paddle position
  */
-int8_t get_paddle_pos (Paddle* paddle) 
+int8_t get_paddle_pos (Paddle_t* paddle) 
 {
-    return paddle->pos
+    return paddle->pos;
 }
 
 /**
@@ -19,9 +19,10 @@ int8_t get_paddle_pos (Paddle* paddle)
  * 
  * @param paddle pointer to paddle struct
  */
-void init_paddle (Paddle* paddle) 
+Paddle_t init_paddle (void) 
 {
-    paddle->pos = START;
+    Paddle_t paddle = {START};
+    return paddle;
 }
 
 /**
@@ -29,10 +30,10 @@ void init_paddle (Paddle* paddle)
  * 
  * @param paddle pointer to paddle struct
  */
-void move_paddle_left (Paddle* paddle)
+void move_paddle_left (Paddle_t* paddle)
 {
     if (paddle->pos > LEFT_LIM) {
-        paddle_pos--;
+        paddle->pos--;
     }
 }
 
@@ -41,10 +42,10 @@ void move_paddle_left (Paddle* paddle)
  * 
  * @param paddle pointer to paddle struct
  */
-void move_paddle_right (Paddle* paddle) 
+void move_paddle_right (Paddle_t* paddle) 
 {
     if (paddle->pos > RIGHT_LIM) {
-        paddle_pos--;
+        paddle->pos++;
     }
 }
 

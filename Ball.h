@@ -9,6 +9,6 @@ typedef struct {
     uint8_t v;
 } Ball_t;
 
-Ball_t init(uint8_t x_cord,uint8_t y_cord,uint8_t v_cord);
+Ball_t ball_init(uint8_t x_cord,uint8_t y_cord,uint8_t v_cord);
 
 #endif 

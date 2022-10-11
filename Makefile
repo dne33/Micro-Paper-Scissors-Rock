@@ -22,10 +22,30 @@ game.o: game.c ../../drivers/avr/system.h
 system.o: ../../drivers/avr/system.c ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+pio.o: ../../drivers/avr/pio.c ../../drivers/avr/pio.h ../../drivers/avr/system.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+pacer.o: ../../utils/pacer.c ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../utils/pacer.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+display.o: ../../assignment/group_236/Display.c ../../assignment/group_236/Display.h ../../drivers/avr/pio.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+ball.o: ../../assignment/group_236/Ball.c ../../assignment/group_236/Ball.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+timer.o: ../../drivers/avr/timer.c ../../drivers/avr/system.h ../../drivers/avr/timer.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+paddle.o: ../../assignment/group_236/paddle.c ../../assignment/group_236/paddle.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+navswitch.o: ../../drivers/navswitch.c ../../drivers/avr/delay.h ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/navswitch.h
+	$(CC) -c $(CFLAGS) $< -o $@
 
 
 # Link: create ELF output file from object files.
-game.out: game.o system.o
+game.out: game.o system.o pio.o pacer.o display.o ball.o timer.o paddle.o navswitch.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
