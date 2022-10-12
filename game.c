@@ -126,7 +126,6 @@ int main (void)
         
 
         if (ir_uart_read_ready_p ()) {
-            char opponent;
             char result;
             char ch;
             ch = ir_uart_getc ();
@@ -135,8 +134,8 @@ int main (void)
             } 
         } 
         button_update();
-        if (button_push_event_p(0)) {
-            ir_uart_putc(rps[index]);
+        if (button_push_event_p(0) && player != '0') {
+            ir_uart_putc(player);
         }
         if (player != '0' && opponent != '0') {
             ir_uart_putc(rps[index]);
