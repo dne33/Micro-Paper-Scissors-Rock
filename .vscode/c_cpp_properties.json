@@ -3,7 +3,10 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "/csse/users/mla159/Documents/ENCE260/ence260-ucfk4/drivers/test",
+                "/csse/users/mla159/Documents/ENCE260/ence260-ucfk4/utils",
+                "/csse/users/mla159/Documents/ENCE260/ence260-ucfk4/drivers"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",

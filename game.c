@@ -1,47 +1,72 @@
-#include <stdint.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <ctype.h>
-#include <string.h>
-
 #include "system.h"
-#include "pio.h"
 #include "pacer.h"
-#include "Display.h"
-#include "Ball.h"
-#include "paddle.h"
 #include "navswitch.h"
+#include "ir_uart.h"
+#include "tinygl.h"
+#include "../fonts/font5x7_1.h"
+
+
+#define PACER_RATE 500
+#define MESSAGE_RATE 10
+
+
+void display_character (char character)
+{
+    char buffer[2];
+    buffer[0] = character;
+    buffer[1] = '\0';
+    tinygl_text (buffer);
+}
+
 
 int main (void)
 {
-    system_init ();
-    navswitch_init();
-    pacer_init (500);
-    uint8_t x = 3;
-    uint8_t y = 3;
-    uint8_t v = 0;
-    Ball_t Ball = ball_init(x,y,v);
-    display_ball(Ball);
-    Paddle_t paddle = init_paddle();
-    display_paddel(paddle);
+    char character = 'A';
 
+    system_init ();
+    tinygl_init (PACER_RATE);
+    tinygl_font_set (&font5x7_1);
+    tinygl_text_speed_set (MESSAGE_RATE);
+    tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
+    tinygl_text("SELECT: Rock Paper Scissors");
+    navswitch_init ();
+    ir_uart_init();
+    pacer_init (PACER_RATE);
     
 
-    while(1)
+    while (1)
     {
-        pacer_wait ();
-        navswitch_update();
-
-
         if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
-                move_paddle_right(&paddle);
-                display_paddel (paddle);
-            }
+            pacer_wait ();
+            tinygl_update ();
+        }
+        pacer_wait ();
+        tinygl_update ();
+        navswitch_update ();
 
-        if (navswitch_push_event_p (NAVSWITCH_SOUTH)) {
-                move_paddle_left(&paddle);
-                display_paddel (paddle);
-            }
-    }
+        
+        if (navswitch_push_event_p (NAVSWITCH_EAST))
+            character = 'R';
+            display_character (character);
+
+        if (navswitch_push_event_p (NAVSWITCH_SOUTH))
+            character = 'P';
+            display_character (character);
+
+        if (navswitch_push_event_p (NAVSWITCH_WEST))
+            character = 'S';
+            display_character (character);
+
+        if (navswitch_push_event_p (NAVSWITCH_PUSH))
+            ir_uart_putc(character);
+
+        if (ir_uart_read_ready_p ()) {
+            char ch;
+            ch = ir_uart_getc ();
+            character = ch;
+        }
+
+        
+        }
+
 }
