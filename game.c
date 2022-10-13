@@ -9,7 +9,7 @@
 
 
 #define PACER_RATE 500
-#define MESSAGE_RATE 10
+#define MESSAGE_RATE 12
 
 
 void display_character (char character)
@@ -34,43 +34,37 @@ void display_msg(char* message) {
         }
     }
 }
+
 void get_result(char player, char opponent) {
-    char result;
+    char result = 0;
     if (opponent == player) {
         result = 'D';
     }
-    else if (player == 'S' && opponent == 'R')
-    {
+    else if (player == 'S' && opponent == 'R') {
         result = 'L';
     }
-    else if (player == 'S' && opponent == 'P')
-    {
+    else if (player == 'S' && opponent == 'P') {
         result = 'W';
     }
-    else if (player == 'R' && opponent == 'P')
-    {
+    else if (player == 'R' && opponent == 'P') {
         result = 'L';
     }
-    else if (player == 'R' && opponent == 'S')
-    {
+    else if (player == 'R' && opponent == 'S') {
         result = 'W';
     }
-    else if (player == 'P' && opponent == 'R')
-    {
+    else if (player == 'P' && opponent == 'R') {
         result = 'W';
     }
-    else if (player == 'P' && opponent == 'S')
-    {
+    else if (player == 'P' && opponent == 'S') {
         result = 'L';
     }
-    if (result != '0')
-    {
+    if (result != '0') {
         if (result == 'L') {
-            display_msg("loser");
+            display_msg("LOSER");
         } else if (result == 'W') {
-            display_msg("winner");
+            display_msg("WINNER");
         } else {
-            display_msg("draw");
+            display_msg("DRAW");
         }
     }
 }
@@ -99,7 +93,7 @@ int main (void)
         navswitch_update ();
 
         if (counter == 0) {
-            display_msg("SELECT: Rock Paper Scissors");
+            display_msg("PUSH UP TO START");
         }
         if (counter == 0) {
             counter ++;
@@ -122,11 +116,12 @@ int main (void)
 
         if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
             player = rps[index];
+            led_set(0,1);
+            tinygl_clear();
         }
         
 
         if (ir_uart_read_ready_p ()) {
-            char opponent;
             char result;
             char ch;
             ch = ir_uart_getc ();
@@ -140,7 +135,9 @@ int main (void)
         }
         if (player != '0' && opponent != '0') {
             ir_uart_putc(rps[index]);
+            led_set(0,0);
             get_result(player, opponent);
+            counter = 0;
         }
         display_character (rps[index]); 
     }
