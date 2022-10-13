@@ -31,18 +31,9 @@ void display_character (char character)
 void display_msg_no_esc(char* message) {
     bool displaying = true;
     tinygl_text_mode_set (TINYGL_TEXT_MODE_STEP);
-    tinygl_point_t point = {5,7};
-    tinygl_draw_message(message, point, 1);
-    while (displaying) {
-            pacer_wait ();
-            tinygl_update ();
-            navswitch_update ();
-            if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
-            displaying = false;
-            }
-        }
-        
-
+    tinygl_point_t point = {0,0};
+    tinygl_draw_message(message, point, 1);\
+    tinygl_update();
 
 }
 
@@ -100,7 +91,7 @@ int get_result(char player, char opponent,int win_count)
         } else if (result == 'W') {
             display_msg("WINNER");
             win_count++;
-        } else {
+        } else if (result == 'D') {
             display_msg("DRAW");
         }
         tinygl_clear();
@@ -143,10 +134,7 @@ char select_rps(char player)
             
         }
         
-<<<<<<< HEAD
-        display_character (rps[index]);
-=======
->>>>>>> d5d51911ad5733ce52513453ccfb933dbcbfbc63
+        
     }
     return player;
 }
@@ -158,7 +146,7 @@ int main (void)
     char player = '0';
     char opponent = '0';
     char ch = '0';
-    int win_count = 0;
+    int win_count = -1;
     system_init ();
     tinygl_init (PACER_RATE);
     tinygl_font_set (&font5x5_1);
@@ -171,28 +159,18 @@ int main (void)
     
     while (1)
     {
-<<<<<<< HEAD
-        tinygl_update ();
-        pacer_wait ();
-
-        if (counter == 0) {
-            display_msg_no_esc("PUSH UP TO START");
-=======
         tinygl_update();
-        pacer_wait ();
         button_update();
-        navswitch_update();
+        pacer_wait();
 
         while(counter == 0) {
-            display_msg("PUSH UP TO START");
->>>>>>> d5d51911ad5733ce52513453ccfb933dbcbfbc63
+            display_msg_no_esc("PUSH UP TO START");
             counter++;
         }
         if (player == '0') {
             player = select_rps(player);
         }
 
-<<<<<<< HEAD
         
         if (recv == 0) {
             if (ir_uart_read_ready_p ()) {
@@ -205,27 +183,10 @@ int main (void)
                     ch = '0';
                     recv = 0;
                 }
-=======
-        if (player == '0') {
-            player = select_rps(player);
-        }
-
-        if (player != '0' && navswitch_push_event_p(NAVSWITCH_PUSH)) {
-            ir_uart_putc(player);
-        }
-
-        if (ir_uart_read_ready_p ()) {
-            
-            ch = ir_uart_getc ();
-            if (ch == 'R' || ch == 'P' || ch == 'S' ) {
-                opponent = ch;
-                ch = '0';
->>>>>>> d5d51911ad5733ce52513453ccfb933dbcbfbc63
             } 
         }
         
 
-<<<<<<< HEAD
         button_update();
         if (button_push_event_p(0)) {
             ir_uart_putc(player);
@@ -235,31 +196,19 @@ int main (void)
             if (player != '0' && opponent != '0') {
                 ir_uart_putc(player);
                 led_set(0,0);
-                
-                get_result(player, opponent);
                 ir_uart_putc('X'); // Break up repetitive sending of rps 
+                win_count = get_result(player, opponent,win_count);
+                win_counter(win_count);
+                if (win_count == 4) {
+                    display_msg("CONGRATULATIONS!");
+                    tinygl_clear();
+                    win_count = 0;
+                }
                 counter = 0;
                 recv = 0;
                 player = '0';
                 opponent = '0';
             }
-=======
-        
-
-        if (player != '0' && opponent != '0') {
-            ir_uart_putc(player);
-            led_set(0,1);
-            win_count = get_result(player, opponent,win_count);
-            win_counter(win_count);
-            if (win_count == 6) {
-                display_msg("CONGRATULATIONS!");
-                tinygl_clear();
-                win_count = 0;
-            }
-            counter = 0;
-            player = '0';
-            opponent = '0';
->>>>>>> d5d51911ad5733ce52513453ccfb933dbcbfbc63
         }
         
     }
