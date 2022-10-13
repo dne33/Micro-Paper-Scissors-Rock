@@ -19,6 +19,7 @@
 #define MESSAGE_RATE 12
 
 
+
 void display_character (char character)
 {
     char buffer[2];
@@ -61,7 +62,15 @@ void display_msg(char* message)
     }
 }
 
-void get_result(char player, char opponent) 
+
+void win_counter(int win_count)
+{
+    tinygl_point_t point = {win_count,6};
+    tinygl_pixel_set(point,1);
+    tinygl_update();
+}
+
+int get_result(char player, char opponent,int win_count) 
 {
     char result = '0';
     if (opponent == player) {
@@ -90,12 +99,14 @@ void get_result(char player, char opponent)
             display_msg("LOSER");
         } else if (result == 'W') {
             display_msg("WINNER");
+            win_count++;
         } else {
             display_msg("DRAW");
         }
         tinygl_clear();
         result = '0';
     }
+    return win_count;
 }
 
 char select_rps(char player) 
@@ -121,6 +132,8 @@ char select_rps(char player)
                 index++;
             } 
         }
+        
+        display_character (rps[index]);
 
         if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
             player = rps[index];
@@ -130,7 +143,10 @@ char select_rps(char player)
             
         }
         
+<<<<<<< HEAD
         display_character (rps[index]);
+=======
+>>>>>>> d5d51911ad5733ce52513453ccfb933dbcbfbc63
     }
     return player;
 }
@@ -142,6 +158,7 @@ int main (void)
     char player = '0';
     char opponent = '0';
     char ch = '0';
+    int win_count = 0;
     system_init ();
     tinygl_init (PACER_RATE);
     tinygl_font_set (&font5x5_1);
@@ -154,17 +171,28 @@ int main (void)
     
     while (1)
     {
+<<<<<<< HEAD
         tinygl_update ();
         pacer_wait ();
 
         if (counter == 0) {
             display_msg_no_esc("PUSH UP TO START");
+=======
+        tinygl_update();
+        pacer_wait ();
+        button_update();
+        navswitch_update();
+
+        while(counter == 0) {
+            display_msg("PUSH UP TO START");
+>>>>>>> d5d51911ad5733ce52513453ccfb933dbcbfbc63
             counter++;
         }
         if (player == '0') {
             player = select_rps(player);
         }
 
+<<<<<<< HEAD
         
         if (recv == 0) {
             if (ir_uart_read_ready_p ()) {
@@ -177,10 +205,27 @@ int main (void)
                     ch = '0';
                     recv = 0;
                 }
+=======
+        if (player == '0') {
+            player = select_rps(player);
+        }
+
+        if (player != '0' && navswitch_push_event_p(NAVSWITCH_PUSH)) {
+            ir_uart_putc(player);
+        }
+
+        if (ir_uart_read_ready_p ()) {
+            
+            ch = ir_uart_getc ();
+            if (ch == 'R' || ch == 'P' || ch == 'S' ) {
+                opponent = ch;
+                ch = '0';
+>>>>>>> d5d51911ad5733ce52513453ccfb933dbcbfbc63
             } 
         }
         
 
+<<<<<<< HEAD
         button_update();
         if (button_push_event_p(0)) {
             ir_uart_putc(player);
@@ -198,6 +243,23 @@ int main (void)
                 player = '0';
                 opponent = '0';
             }
+=======
+        
+
+        if (player != '0' && opponent != '0') {
+            ir_uart_putc(player);
+            led_set(0,1);
+            win_count = get_result(player, opponent,win_count);
+            win_counter(win_count);
+            if (win_count == 6) {
+                display_msg("CONGRATULATIONS!");
+                tinygl_clear();
+                win_count = 0;
+            }
+            counter = 0;
+            player = '0';
+            opponent = '0';
+>>>>>>> d5d51911ad5733ce52513453ccfb933dbcbfbc63
         }
         
     }
