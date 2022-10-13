@@ -1,3 +1,10 @@
+/** @file   game.c
+    @author  Matt Lane, Daniel Neal
+    @date    13 October 2022
+    @brief   Rock,Paper,Scissors game
+*/
+
+
 #include "system.h"
 #include "pacer.h"
 #include "navswitch.h"
@@ -5,9 +12,9 @@
 #include "tinygl.h"
 #include "button.h"
 #include "led.h"
-#include "../fonts/font5x7_1.h"
+#include "../fonts/font5x5_1.h"
 
-
+/* Define pacer rate in Hz. */
 #define PACER_RATE 500
 #define MESSAGE_RATE 12
 
@@ -20,7 +27,8 @@ void display_character (char character)
     tinygl_text (buffer);
 }
 
-void display_msg(char* message) {
+void display_msg(char* message) 
+{
     bool displaying = true;
     
     tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
@@ -29,14 +37,16 @@ void display_msg(char* message) {
         pacer_wait ();
         tinygl_update ();
         navswitch_update ();
+        button_update();
         if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
            displaying = false;
         }
     }
 }
 
-void get_result(char player, char opponent) {
-    char result = 0;
+void get_result(char player, char opponent) 
+{
+    char result = '0';
     if (opponent == player) {
         result = 'D';
     }
@@ -66,39 +76,20 @@ void get_result(char player, char opponent) {
         } else {
             display_msg("DRAW");
         }
+        tinygl_clear();
+        result = '0';
     }
 }
 
-int main (void)
+char select_rps(char player) 
 {
-    int counter = 0;
     int index = 0;
     char rps[3] = {'R', 'P', 'S'};
-    char player = '0';
-    char opponent = '0';
-    system_init ();
-    tinygl_init (PACER_RATE);
-    tinygl_font_set (&font5x7_1);
-    tinygl_text_speed_set (MESSAGE_RATE);
-    navswitch_init ();
-    button_init ();
-    ir_uart_init();
-    pacer_init (PACER_RATE);
-    
-    
-    while (1)
-    {
-        pacer_wait ();
+
+    while (player == '0') {
         tinygl_update ();
         navswitch_update ();
 
-        if (counter == 0) {
-            display_msg("PUSH UP TO START");
-        }
-        if (counter == 0) {
-            counter ++;
-        }
-           
         if (navswitch_push_event_p (NAVSWITCH_WEST)) {
             if (index == 0) {
                 index = 2;
@@ -118,28 +109,68 @@ int main (void)
             player = rps[index];
             led_set(0,1);
             tinygl_clear();
+            return player;
+            
         }
-        
+        display_character (rps[index]);
+    }
+    return player;
+}
+
+int main (void)
+{
+    int counter = 0;
+    char player = '0';
+    char opponent = '0';
+    char ch = '0';
+    system_init ();
+    tinygl_init (PACER_RATE);
+    tinygl_font_set (&font5x5_1);
+    tinygl_text_speed_set (MESSAGE_RATE);
+    navswitch_init ();
+    button_init ();
+    ir_uart_init();
+    pacer_init (PACER_RATE);
+    
+    
+    while (1)
+    {
+        pacer_wait ();
+        tinygl_update ();
+        navswitch_update ();
+
+        if (counter == 0) {
+            display_msg("PUSH UP TO START");
+            counter++;
+        }
+
+        player = select_rps(player);
 
         if (ir_uart_read_ready_p ()) {
-            char result;
-            char ch;
+            
             ch = ir_uart_getc ();
             if (ch == 'R' || ch == 'P' || ch == 'S' ) {
                 opponent = ch;
+                ch = '0';
             } 
         } 
+
         button_update();
+
         if (button_push_event_p(0)) {
-            ir_uart_putc(rps[index]);
+            ir_uart_putc(player);
         }
+
         if (player != '0' && opponent != '0') {
-            ir_uart_putc(rps[index]);
+            ir_uart_putc(player);
             led_set(0,0);
             get_result(player, opponent);
             counter = 0;
+            player = '0';
+            opponent = '0';
         }
-        display_character (rps[index]); 
+
+         
     }
     return 0;
     
