@@ -13,181 +13,89 @@
 #include "button.h"
 #include "led.h"
 #include "../fonts/font5x5_1.h"
+#include "game_display.h"
+#include "game_logic.h"
 
 /* Define pacer rate in Hz. */
 #define PACER_RATE 500
 #define MESSAGE_RATE 12
 
-
-
-void display_character (char character)
-{
-    char buffer[2];
-    buffer[0] = character;
-    buffer[1] = '\0';
-    tinygl_text (buffer);
-}
-
-
-void display_msg(char* message) 
-{
-    bool displaying = true;
-    
-    tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
-    tinygl_text(message);
-    while (displaying) {
-        pacer_wait ();
-        tinygl_update ();
-        navswitch_update ();
-        if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
-           displaying = false;
-        }
-    }
-}
-
-
-void win_counter(int win_count)
-{
-    tinygl_point_t point = {win_count,6};
-    tinygl_pixel_set(point,1);
-    tinygl_update();
-}
-
-int get_result(char player, char opponent,int win_count) 
-{
-    char result = '0';
-    if (opponent == player) {
-        result = 'D';
-    }
-    else if (player == 'S' && opponent == 'R') {
-        result = 'L';
-    }
-    else if (player == 'S' && opponent == 'P') {
-        result = 'W';
-    }
-    else if (player == 'R' && opponent == 'P') {
-        result = 'L';
-    }
-    else if (player == 'R' && opponent == 'S') {
-        result = 'W';
-    }
-    else if (player == 'P' && opponent == 'R') {
-        result = 'W';
-    }
-    else if (player == 'P' && opponent == 'S') {
-        result = 'L';
-    }
-    if (result != '0') {
-        if (result == 'L') {
-            display_msg("LOSER");
-        } else if (result == 'W') {
-            display_msg("WINNER");
-            win_count++;
-        } else if (result == 'D') {
-            display_msg("DRAW");
-        }
-        tinygl_clear();
-        result = '0';
-    }
-    return win_count;
-}
-
-char select_rps(char player) 
-{
-    int index = 0;
-    char rps[3] = {'R', 'P', 'S'};
-
-    while (player == '0') {
-        tinygl_update ();
-        navswitch_update ();
-
-        if (navswitch_push_event_p (NAVSWITCH_WEST)) {
-            if (index == 0) {
-                index = 2;
-            } else {
-                index--;
-            }
-        }
-        if (navswitch_push_event_p (NAVSWITCH_EAST)) {
-            if (index == 2) {
-                index = 0;
-            } else {
-                index++;
-            } 
-        }
-        
-        display_character (rps[index]);
-
-        if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
-            player = rps[index];
-            led_set(0,1);
-            tinygl_clear();
-            return player;
-            
-        }
-        
-        
-    }
-    return player;
-}
-
-int main (void)
+int main (void) 
 {
     int counter = 0;
-    int recv = 0;
     char player = '0';
     char opponent = '0';
     char ch = '0';
+    char chosen = 0;
     int win_count = -1;
-    system_init ();
-    tinygl_init (PACER_RATE);
-    tinygl_font_set (&font5x5_1);
-    tinygl_text_speed_set (MESSAGE_RATE);
-    navswitch_init ();
-    button_init ();
-    ir_uart_init();
-    pacer_init (PACER_RATE);
-    
-    
+    display_msg("PUSH UP TO START");
     while (1)
     {
-        tinygl_update();
-        button_update();
         pacer_wait();
 
-        while(counter == 0) {
-            display_msg("PUSH UP TO START");
-            counter++;
-        }
-        if (player == '0') {
-            player = select_rps(player);
-        }
-
-        
-
-        if (ir_uart_read_ready_p ()) {
-            ch = ir_uart_getc ();
-            recv = 1;
-            if (ch == 'R' || ch == 'P' || ch == 'S' ) {
-                opponent = ch;
-                ch = '0';
+        if (counter==0) {
+            tinygl_update();
+            navswitch_update ();
+            if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
+                counter++;
+                tinygl_clear();
             }
-    
         }
         
-
-        button_update();
-        if (button_push_event_p(0)) {
-            tinygl_clear ();
-            ir_uart_putc (player);
+        if (counter == 1) {
+            tinygl_update();
+            chosen = select_rps(player, chosen);
+            if  (chosen == 0) {
+                display_character('R');
+            } else if (chosen == 1) {
+                display_character('P');
+            } else if (chosen == 2) {
+                display_character('S');
+            } else { 
+                led_set(0,1);
+                player = chosen;
+                counter++;
+                tinygl_clear();
+                tinygl_update();
+            }
+            
         }
+        
+        if (counter == 2) {
 
+            //Hangs Here cannot figure out why? button is pressing but hangs on send.
+            if (ir_uart_read_ready_p ()) {
+                ch = ir_uart_getc ();
+                if (ch == 'R' || ch == 'P' || ch == 'S' ) {
+                    opponent = ch;
+                    ch = '0';
+                    counter++;
+                }
     
-        if (player != '0' && opponent != '0') {
+            }
+
+            button_update();
+            if (button_push_event_p(0)) {
+                tinygl_clear ();
+                ir_uart_putc (player);
+            }
+
+        }
+            
+        if (counter==3) {
             ir_uart_putc(player);
             led_set(0,0);
             ir_uart_putc('X'); // Break up repetitive sending of rps 
-            win_count = get_result(player, opponent,win_count);
+            char result = get_result(player, opponent);
+            if (result == 'L') {
+                display_msg("LOSER");
+            } else if (result == 'W') {
+                display_msg("WINNER");
+                win_count++;
+            } else if (result == 'D') {
+                display_msg("DRAW");
+            }
+            tinygl_clear();
             win_counter(win_count);
             if (win_count == 4) {
                 display_msg("CONGRATULATIONS!");
@@ -197,9 +105,7 @@ int main (void)
             counter = 0;
             player = '0';
             opponent = '0';
-        }
-        
-        
+        }  
     }
     return 0;
     

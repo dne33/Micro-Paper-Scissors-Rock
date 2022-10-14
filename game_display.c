@@ -1,6 +1,7 @@
-#include "system.h"
-#include "tinygl.h"
-#include "navswitch.h"
+
+#include "game_display.h"
+
+
 
 
 void display_character (char character)
@@ -12,20 +13,14 @@ void display_character (char character)
 }
 
 
-void display_msg(char* message) 
+bool display_msg(char* message) 
 {
-    bool displaying = true;
-    
-    tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
+    tinygl_init(PACER_RATE);
+    tinygl_font_set (&font5x5_1);
+    tinygl_text_speed_set (MESSAGE_RATE);
     tinygl_text(message);
-    while (displaying) {
-        pacer_wait ();
-        tinygl_update ();
-        navswitch_update ();
-        if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
-           displaying = false;
-        }
-    }
+    tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
+    
 }
 
 void win_counter(int win_count)

@@ -2,7 +2,7 @@
 #include "navswitch.h"
 
 /* Returns the result of a RPS Battle. */
-int get_result(char player, char opponent,int win_count) 
+int get_result(char player, char opponent) 
 {
     char result = '0';
     if (opponent == player) {
@@ -29,12 +29,12 @@ int get_result(char player, char opponent,int win_count)
     if (result != '0') {
         return result;
     }
+    return '0';
 }
 
 /* Allows selection of Rock,Paper, or Scissors.*/
-char select_rps(char player) 
+char select_rps(char player, int index) 
 {
-    int index = 0;
     char rps[3] = {'R', 'P', 'S'};
     navswitch_update ();
     if (navswitch_push_event_p (NAVSWITCH_WEST)) {
@@ -55,5 +55,5 @@ char select_rps(char player)
         player = rps[index];
         return player;
     }
-    return rps[index] + 'X';
+    return index;
 }

@@ -16,13 +16,13 @@ all: game.out
 
 
 # Compile: create object files from C source files.
-game_loop.o: game_loop.c game_loop.h game_logic.h game_display.h ../../drivers/avr/ir_uart.h ../../drivers/avr/system.h ../../drivers/button.h ../../drivers/led.h ../../drivers/display.h ../../drivers/navswitch.h ../../fonts/font5x7_1.h ../../utils/font.h ../../utils/pacer.h ../../utils/tinygl.h ../../drivers/avr/timer.h
+game.o: game.c ../../drivers/avr/ir_uart.h ../../drivers/avr/system.h ../../drivers/button.h ../../drivers/led.h ../../drivers/display.h ../../drivers/navswitch.h ../../fonts/font5x7_1.h ../../utils/font.h ../../utils/pacer.h ../../utils/tinygl.h game_logic.h game_display.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-game_display.o: game_display.c game_display.h ../../drivers/avr/system.h ../../utils/tinygl.h ../../drivers/navswitch.h
+game_logic.o: game_logic.c ../../drivers/avr/system.h ../../drivers/navswitch.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-game_logic.o: game_logic.c game_logic.h ../../drivers/avr/system.h ../../drivers/navswitch.h
+game_display.o: game_display.c ../../drivers/avr/system.h ../../drivers/navswitch.h ../../utils/tinygl.h ../../drivers/display.h ../../fonts/font5x5_1.h ../../utils/font.h ../../utils/pacer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 ir_uart.o: ../../drivers/avr/ir_uart.c ../../drivers/avr/ir_uart.h ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/avr/timer0.h ../../drivers/avr/usart1.h
@@ -52,7 +52,7 @@ timer0.o: ../../drivers/avr/timer0.c ../../drivers/avr/bits.h ../../drivers/avr/
 usart1.o: ../../drivers/avr/usart1.c ../../drivers/avr/system.h ../../drivers/avr/usart1.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-display.o: ../../drivers/display.c ../../drivers/avr/system.h ../../drivers/display.h ../../drivers/ledmat.h
+display.o: ../../drivers/display.c ../../drivers/avr/system.h ../../drivers/display.h ../../drivers/ledmat.h 
 	$(CC) -c $(CFLAGS) $< -o $@
 
 ledmat.o: ../../drivers/ledmat.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/ledmat.h
@@ -72,7 +72,7 @@ tinygl.o: ../../utils/tinygl.c ../../drivers/avr/system.h ../../drivers/display.
 
 
 # Link: create ELF output file from object files.
-game.out: game.o game_display.o game_logic.o ir_uart.o pio.o prescale.o system.o timer.o timer0.o usart1.o display.o ledmat.o navswitch.o font.o pacer.o tinygl.o button.o led.o
+game.out: game.o ir_uart.o pio.o prescale.o system.o timer.o timer0.o usart1.o display.o ledmat.o navswitch.o font.o pacer.o tinygl.o button.o led.o game_logic.o game_display.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
