@@ -1,3 +1,8 @@
+#include "system.h"
+#include "tinygl.h"
+#include "navswitch.h"
+
+
 void display_character (char character)
 {
     char buffer[2];

@@ -18,7 +18,66 @@
 #define PACER_RATE 500
 #define MESSAGE_RATE 12
 
+<<<<<<< HEAD
 int main (void) 
+=======
+
+int get_result(char player, char opponent,int win_count) 
+{
+    char result = '0';
+    if (opponent == player) {
+        result = 'D';
+    }
+    else if (player == 'S' && opponent == 'R') {
+        result = 'L';
+    }
+    else if (player == 'S' && opponent == 'P') {
+        result = 'W';
+    }
+    else if (player == 'R' && opponent == 'P') {
+        result = 'L';
+    }
+    else if (player == 'R' && opponent == 'S') {
+        result = 'W';
+    }
+    else if (player == 'P' && opponent == 'R') {
+        result = 'W';
+    }
+    else if (player == 'P' && opponent == 'S') {
+        result = 'L';
+    }
+    if (result != '0') {
+        if (result == 'L') {
+            display_msg("LOSER");
+        } else if (result == 'W') {
+            display_msg("WINNER");
+            win_count++;
+        } else if (result == 'D') {
+            display_msg("DRAW");
+        }
+        tinygl_clear();
+        result = '0';
+    }
+    return win_count;
+}
+
+void init(void) 
+{
+    system_init ();
+    navswitch_init ();
+    button_init ();
+    ir_uart_init();
+
+    tinygl_init (PACER_RATE);
+    tinygl_font_set (&font5x5_1);
+    tinygl_text_speed_set (MESSAGE_RATE);
+
+    pacer_init (PACER_RATE);
+
+}
+
+int main (void)
+>>>>>>> ad71dc656e3377ce57d3aa1e55e4504821add741
 {
     int counter = 0;
     int recv = 0;
@@ -26,15 +85,8 @@ int main (void)
     char opponent = '0';
     char ch = '0';
     int win_count = -1;
-    system_init ();
-    tinygl_init (PACER_RATE);
-    tinygl_font_set (&font5x5_1);
-    tinygl_text_speed_set (MESSAGE_RATE);
-    navswitch_init ();
-    button_init ();
-    ir_uart_init();
-    pacer_init (PACER_RATE);
-    
+
+    init();
     
     while (1)
     {
