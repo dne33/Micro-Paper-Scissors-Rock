@@ -18,49 +18,7 @@
 #define PACER_RATE 500
 #define MESSAGE_RATE 12
 
-
-int get_result(char player, char opponent,int win_count) 
-{
-    char result = '0';
-    if (opponent == player) {
-        result = 'D';
-    }
-    else if (player == 'S' && opponent == 'R') {
-        result = 'L';
-    }
-    else if (player == 'S' && opponent == 'P') {
-        result = 'W';
-    }
-    else if (player == 'R' && opponent == 'P') {
-        result = 'L';
-    }
-    else if (player == 'R' && opponent == 'S') {
-        result = 'W';
-    }
-    else if (player == 'P' && opponent == 'R') {
-        result = 'W';
-    }
-    else if (player == 'P' && opponent == 'S') {
-        result = 'L';
-    }
-    if (result != '0') {
-        if (result == 'L') {
-            display_msg("LOSER");
-        } else if (result == 'W') {
-            display_msg("WINNER");
-            win_count++;
-        } else if (result == 'D') {
-            display_msg("DRAW");
-        }
-        tinygl_clear();
-        result = '0';
-    }
-    return win_count;
-}
-
-
-
-int main (void)
+int main (void) 
 {
     int counter = 0;
     int recv = 0;
@@ -88,10 +46,18 @@ int main (void)
             display_msg("PUSH UP TO START");
             counter++;
         }
+
         if (player == '0') {
-            chosen = select_rps(player);
-            if  (chosen == 'X') {
+            char chosen = select_rps(player);
+            if  (chosen == 'RX') {
                 display_character('R')
+            } else if (chosen == 'PX') {
+                display_character('R')
+            } else if (chosen == 'SX') {
+                display_character('R')
+            } else { 
+                led_set(0,1)
+                player = chosen;
             }
         }
 
@@ -99,7 +65,6 @@ int main (void)
 
         if (ir_uart_read_ready_p ()) {
             ch = ir_uart_getc ();
-            recv = 1;
             if (ch == 'R' || ch == 'P' || ch == 'S' ) {
                 opponent = ch;
                 ch = '0';
@@ -107,10 +72,8 @@ int main (void)
     
         }
         
-
         button_update();
         if (button_push_event_p(0)) {
-            tinygl_clear ();
             ir_uart_putc (player);
         }
 
@@ -119,7 +82,16 @@ int main (void)
             ir_uart_putc(player);
             led_set(0,0);
             ir_uart_putc('X'); // Break up repetitive sending of rps 
-            win_count = get_result(player, opponent,win_count);
+            result = get_result(player, opponent,win_count);
+            if (result == 'L') {
+                display_msg("LOSER");
+            } else if (result == 'W') {
+                display_msg("WINNER");
+                win_count++;
+            } else if (result == 'D') {
+                display_msg("DRAW");
+            }
+            tinygl_clear();
             win_counter(win_count);
             if (win_count == 4) {
                 display_msg("CONGRATULATIONS!");

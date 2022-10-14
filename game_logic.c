@@ -1,4 +1,4 @@
-int get_result(char player, char opponent,int win_count) 
+char get_result(char player, char opponent,int win_count) 
 {
     char result = '0';
     if (opponent == player) {
@@ -31,37 +31,24 @@ char select_rps(char player)
 {
     int index = 0;
     char rps[3] = {'R', 'P', 'S'};
-
-    while (player == '0') {
-        tinygl_update ();
-        navswitch_update ();
-
-        if (navswitch_push_event_p (NAVSWITCH_WEST)) {
-            if (index == 0) {
-                index = 2;
-            } else {
-                index--;
-            }
+    navswitch_update ();
+    if (navswitch_push_event_p (NAVSWITCH_WEST)) {
+        if (index == 0) {
+            index = 2;
+        } else {
+            index--;
         }
-        if (navswitch_push_event_p (NAVSWITCH_EAST)) {
-            if (index == 2) {
-                index = 0;
-            } else {
-                index++;
-            } 
-        }
-        
-        
-
-        if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
-            player = rps[index];
-            led_set(0,1);
-            tinygl_clear();
-            return player;
-            
-        }
-        return 'X';
-        
     }
-    return player;
+    if (navswitch_push_event_p (NAVSWITCH_EAST)) {
+        if (index == 2) {
+            index = 0;
+        } else {
+            index++;
+        } 
+    }
+    if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
+        player = rps[index];
+        return player;
+    }
+    return rps[index] + 'X';
 }
