@@ -58,7 +58,20 @@ int get_result(char player, char opponent,int win_count)
     return win_count;
 }
 
+void init(void) 
+{
+    system_init ();
+    navswitch_init ();
+    button_init ();
+    ir_uart_init();
 
+    tinygl_init (PACER_RATE);
+    tinygl_font_set (&font5x5_1);
+    tinygl_text_speed_set (MESSAGE_RATE);
+
+    pacer_init (PACER_RATE);
+
+}
 
 int main (void)
 {
@@ -68,15 +81,8 @@ int main (void)
     char opponent = '0';
     char ch = '0';
     int win_count = -1;
-    system_init ();
-    tinygl_init (PACER_RATE);
-    tinygl_font_set (&font5x5_1);
-    tinygl_text_speed_set (MESSAGE_RATE);
-    navswitch_init ();
-    button_init ();
-    ir_uart_init();
-    pacer_init (PACER_RATE);
-    
+
+    init();
     
     while (1)
     {

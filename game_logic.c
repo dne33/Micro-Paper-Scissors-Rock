@@ -1,3 +1,7 @@
+#include "system.h"
+#include "navswitch.h"
+
+/* Returns the result of a RPS Battle. */
 int get_result(char player, char opponent,int win_count) 
 {
     char result = '0';
@@ -27,6 +31,7 @@ int get_result(char player, char opponent,int win_count)
     }
 }
 
+/* Allows selection of Rock,Paper, or Scissors.*/
 char select_rps(char player) 
 {
     int index = 0;
