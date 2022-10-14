@@ -19,40 +19,6 @@
 #define MESSAGE_RATE 12
 
 
-
-void display_character (char character)
-{
-    char buffer[2];
-    buffer[0] = character;
-    buffer[1] = '\0';
-    tinygl_text (buffer);
-}
-
-
-void display_msg(char* message) 
-{
-    bool displaying = true;
-    
-    tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
-    tinygl_text(message);
-    while (displaying) {
-        pacer_wait ();
-        tinygl_update ();
-        navswitch_update ();
-        if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
-           displaying = false;
-        }
-    }
-}
-
-
-void win_counter(int win_count)
-{
-    tinygl_point_t point = {win_count,6};
-    tinygl_pixel_set(point,1);
-    tinygl_update();
-}
-
 int get_result(char player, char opponent,int win_count) 
 {
     char result = '0';
@@ -92,44 +58,7 @@ int get_result(char player, char opponent,int win_count)
     return win_count;
 }
 
-char select_rps(char player) 
-{
-    int index = 0;
-    char rps[3] = {'R', 'P', 'S'};
 
-    while (player == '0') {
-        tinygl_update ();
-        navswitch_update ();
-
-        if (navswitch_push_event_p (NAVSWITCH_WEST)) {
-            if (index == 0) {
-                index = 2;
-            } else {
-                index--;
-            }
-        }
-        if (navswitch_push_event_p (NAVSWITCH_EAST)) {
-            if (index == 2) {
-                index = 0;
-            } else {
-                index++;
-            } 
-        }
-        
-        display_character (rps[index]);
-
-        if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
-            player = rps[index];
-            led_set(0,1);
-            tinygl_clear();
-            return player;
-            
-        }
-        
-        
-    }
-    return player;
-}
 
 int main (void)
 {
@@ -160,7 +89,10 @@ int main (void)
             counter++;
         }
         if (player == '0') {
-            player = select_rps(player);
+            chosen = select_rps(player);
+            if  (chosen == 'X') {
+                display_character('R')
+            }
         }
 
         
