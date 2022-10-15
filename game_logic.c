@@ -2,7 +2,7 @@
 #include "navswitch.h"
 
 /* Returns the result of a RPS Battle. */
-int get_result(char player, char opponent) 
+char get_result(char player, char opponent) 
 {
     char result = '0';
     if (opponent == player) {
