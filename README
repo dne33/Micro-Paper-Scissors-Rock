@@ -48,3 +48,4 @@ Run `make` and then `make program` to start playing!
 **Result**: If you win a little marker will appear in the bottom left of your screen after you skip the win/lose/draw screen.You will also be prompted to select another character. First to five wins so make sure you think hard!
 
 **End Of Game**:  After 5 wins (or losses) you will be greeted with a overall winner/loser screen. If you'd like to play again simply press the nav switch up again.
+
