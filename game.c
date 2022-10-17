@@ -31,7 +31,7 @@ int winner(int win_count) {
 
 
 /* Looping the starting message until Navswitch North is pressed
-    @param counter indicates what stage the program is on*/
+    @param counter Indicates what stage the program is on*/
 int start_loop(int counter)
 {
     navswitch_update ();
@@ -41,6 +41,135 @@ int start_loop(int counter)
     }
     return counter;
 
+}
+/* Tidy up chosen being used as both an int and a char*/
+int select_character_loop(int counter, char* player, char* chosen )
+{
+    *chosen = select_rps(*player, *chosen); 
+    if  (*chosen == 0) {
+        display_character('R');
+    } else if (*chosen == 1) {
+        display_character('P');
+    } else if (*chosen == 2) {
+        display_character('S');
+    } else { 
+        *player = *chosen;
+        tinygl_clear();
+        tinygl_update();
+        counter++;
+    }
+    return counter;
+
+}
+
+
+/* Loop to send and recieve
+    @param counter indicates what stage the program is at
+    @param recv  pointer to indicate if the opponents selection has been stored
+    @param opponent poointer to opponents selction
+    @param ch a pointer to a temporary storage of incoming IR chararacters
+    @param player the players selection */
+int send_recv_loop(int counter, int* recv,char* opponent,char* ch,char player)
+{
+    navswitch_update ();
+    button_update();
+
+    if (*recv==1) {
+        if (ir_uart_read_ready_p ()) {
+            *ch = ir_uart_getc ();
+            if (*ch == 'R' || *ch == 'P' || *ch == 'S' ) {
+                *opponent = *ch;
+                *recv = 0; //Stop receiving when a valid character has been stored.
+                led_set(0,1); //Notify player that the opponents selction has been received 
+            }
+            *ch = '0';
+        }
+    }
+    
+    if (button_push_event_p(0)) {
+        ir_uart_putc (player);
+    }
+
+    if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
+        counter++;
+        *recv = 1;
+    }
+    return counter;
+
+}
+
+
+/* Loop to process the result
+    @param counter indicates what stage the program is at
+    @param result pointer to if the player won or lost
+    @param win_count pointer to number of wins the player has
+    @param player the players selection 
+    @param opponent pointer to opponents selction*/
+    
+int process_result_loop(int counter, char* result, int* win_count, char* player, char* opponent)
+{
+    //tinygl_update();
+    navswitch_update ();
+    led_set(0,0);
+
+    *result = get_result(*player, *opponent);
+    if (*result == 'L') {
+        display_msg("LOSER");
+    } else if (*result == 'W') {
+        display_msg("WINNER");
+        *win_count = *win_count + 1;
+    } else if (*result == 'D') {
+        display_msg("DRAW");
+    }
+    
+    if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
+        tinygl_clear();
+        return counter++;
+    }
+    return counter;
+}
+
+
+/* Loop to process the result
+    @param counter indicates what stage the program is at
+    @param win_count pointer to number of wins the player has
+    @param player the players selection 
+    @param opponent pointer to opponents selction
+    @param chosen pointer to what value needs to be displayed in selection_loop*/
+int win_count_loop(int counter, int* win_count, char* player, char* opponent, char* chosen)
+{
+    navswitch_update();
+    if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
+        tinygl_clear();
+
+        if(winner(*win_count) == 1) {
+            counter++;
+        } else {
+            counter = 1;
+            *chosen = 0;
+            *player = '0';
+            *opponent = '0';
+        }
+    }
+    return counter;
+}
+
+
+/* Loop to process the result
+    @param counter indicates what stage the program is at
+    @param player the players selection 
+    @param opponent pointer to opponents selction
+    @param chosen pointer to what value needs to be displayed in selection_loop*/
+int reset_loop(int counter, char* player, char* opponent, char* chosen)
+{
+    navswitch_update ();
+    if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
+        counter = 1;
+        *chosen = 0;
+        *player = '0';
+        *opponent = '0';
+    }
+    return counter;
 }
 
 
@@ -78,93 +207,26 @@ int main (void)
             counter = start_loop(counter);
         }
         
-        if (counter == 1) {  // could pass pointers of counter to update while still returning chosen neatly
-            chosen = select_rps(player, chosen); 
-            if  (chosen == 0) {
-                display_character('R');
-            } else if (chosen == 1) {
-                display_character('P');
-            } else if (chosen == 2) {
-                display_character('S');
-            } else { 
-                player = chosen;
-                tinygl_clear();
-                tinygl_update();
-                counter++;
-            }
-            
+        if (counter == 1) {  
+            counter = select_character_loop(counter, &player, &chosen);
         }
         
         if (counter == 2) {
-            navswitch_update ();
-            button_update();
-
-            if (recv==1) {
-                if (ir_uart_read_ready_p ()) {
-                    ch = ir_uart_getc ();
-                    if (ch == 'R' || ch == 'P' || ch == 'S' ) {
-                        opponent = ch;
-                        recv = 0; //Stop receiving when a valid character has been stored.
-                        led_set(0,1); //Notify player that the opponents selction has been received 
-                    }
-                    ch = '0';
-                }
-            }
-         
-            if (button_push_event_p(0)) {
-                ir_uart_putc (player);
-            }
-
-            if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
-                counter++;
-                recv = 1;
-            }                
-            
-
+            counter = send_recv_loop(counter, &recv, &opponent, &ch, player);
         }
 
-            
         if (counter == 3) {
-            result = get_result(player, opponent);
-            if (result == 'L') {
-                display_msg("LOSER");
-            } else if (result == 'W') {
-                display_msg("WINNER");
-                win_count++;
-            } else if (result == 'D') {
-                display_msg("DRAW");
-            }
-            tinygl_update();
-            counter++;
-            led_set(0,0);
-        } 
+            counter = process_result_loop(counter, &result, &win_count, &player, &opponent);
+        }
 
         if (counter == 4) {
-            navswitch_update ();
-            if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
-                tinygl_clear();
-
-                if(winner(win_count)==1) {
-                    counter++;
-                } else {
-                    counter = 1;
-                    chosen = 0;
-                    player = '0';
-                    opponent = '0';
-                }
-                
-            }
+            counter = win_count_loop(counter, &win_count, &player, &opponent, &chosen);
         }
 
         if (counter == 5) {
-            navswitch_update ();
-            if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
-                counter = 1;
-                chosen = 0;
-                player = '0';
-                opponent = '0';
-            }
+            counter = reset_loop(counter, &player, &opponent, &chosen);
         }
+        
     }
     return 0;
     
