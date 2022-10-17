@@ -7,7 +7,7 @@
 
 #include "game_display.h"
 
-/* Display single character.
+/* Display a single character.
     @param character the charater to be displayed */
 void display_character (char character)
 {
@@ -17,7 +17,7 @@ void display_character (char character)
     tinygl_text (buffer);
 }
 
-/* Display string on loop. 
+/* Display a string on loop. 
     @param message the string to be displayed*/
 void display_msg(char* message) 
 {
