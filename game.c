@@ -5,20 +5,22 @@
 */
 
 
-#include "system.h"
-#include "pacer.h"
-#include "navswitch.h"
-#include "ir_uart.h"
-#include "tinygl.h"
-#include "button.h"
-#include "led.h"
-#include "../../fonts/font5x5_1.h"
-#include "game_display.h"
-#include "game_logic.h"
+#include "game.h"
 
 
-/* Looping the starting message until Navswitch North is pressed
-    @param counter Indicates what stage the program is on*/
+/*Initalise all components need to run the game*/
+void initalise (void)
+{
+    system_init();
+    ir_uart_init ();
+    button_init();
+    navswitch_init();
+    pacer_init(PACER_RATE);
+
+} 
+
+
+/* Looping the starting message until Navswitch North is pressed*/
 bool start_loop(void)
 {
     navswitch_update ();
@@ -31,8 +33,10 @@ bool start_loop(void)
 }
 
 
-/* Tidy up chosen being used as both an int and a char*/
-bool select_character_loop(char* player, char* chosen )
+/* Loop for selecting R,P,or S
+    @param player pointer to the players selection
+    @param chosen pointer to what value needs to be displayed in selection_loop*/
+bool select_character_loop(char* player, char* chosen)
 {
     *chosen = select_rps(*player, *chosen); 
     if  (*chosen == 0) {
@@ -77,7 +81,7 @@ bool send_recv_loop(char* opponent, char player)
         }
     }
 
-    if (button_push_event_p(0) || sending ==1) {
+    if (button_push_event_p(0) || sending == 1) {
         if (ir_uart_write_ready_p()) {
             sending = 0;
             ir_uart_putc (player);
@@ -96,7 +100,6 @@ bool send_recv_loop(char* opponent, char player)
     @param win_count pointer to number of wins the player has
     @param player the players selection 
     @param opponent pointer to opponents selction*/
-    
 bool process_result_loop(int* win_count, int* loss_count, char* player, char* opponent)
 {
     static char result = '0';
@@ -125,7 +128,7 @@ bool process_result_loop(int* win_count, int* loss_count, char* player, char* op
 }
 
 
-/* Loop to process the result
+/* Loop to control the win count
     @param counter indicates what stage the program is at
     @param win_count pointer to number of wins the player has
     @param player the players selection 
@@ -171,18 +174,6 @@ bool reset_loop(char* player, char* opponent, char* chosen)
     return false;
     
 }
-
-
-/*Initalise all components need to run the game*/
-void initalise (void)
-{
-    system_init();
-    ir_uart_init ();
-    button_init();
-    navswitch_init();
-    pacer_init(PACER_RATE);
-
-} 
 
 
 int main (void) 

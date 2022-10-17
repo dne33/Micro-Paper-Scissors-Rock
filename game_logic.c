@@ -1,5 +1,3 @@
-#include "system.h"
-#include "navswitch.h"
 #include "game_logic.h"
 
 /* Returns the result of a RPS Battle.
