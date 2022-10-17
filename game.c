@@ -17,19 +17,6 @@
 #include "game_logic.h"
 
 
-/* Displays CONGRATULATIONS if the player reaches 5 wins
-    @param win_count current number of wins by the player */
-int winner(int win_count) {
-    win_counter(win_count);
-    if (win_count == 4) {
-        display_msg("CONGRATULATIONS!");
-        return 1;
-        win_count = -1;
-    }
-    return 0;
-}
-
-
 /* Looping the starting message until Navswitch North is pressed
     @param counter Indicates what stage the program is on*/
 int start_loop(int counter)
@@ -42,6 +29,8 @@ int start_loop(int counter)
     return counter;
 
 }
+
+
 /* Tidy up chosen being used as both an int and a char*/
 int select_character_loop(int counter, char* player, char* chosen )
 {
@@ -106,27 +95,30 @@ int send_recv_loop(int counter, int* recv,char* opponent,char* ch,char player)
     @param player the players selection 
     @param opponent pointer to opponents selction*/
     
-int process_result_loop(int counter, char* result, int* win_count, char* player, char* opponent)
+void process_result_loop(int* counter, int* win_count, char* player, char* opponent)
 {
-    //tinygl_update();
+    static char result = '0';
     navswitch_update ();
     led_set(0,0);
-
-    *result = get_result(*player, *opponent);
-    if (*result == 'L') {
-        display_msg("LOSER");
-    } else if (*result == 'W') {
-        display_msg("WINNER");
-        *win_count = *win_count + 1;
-    } else if (*result == 'D') {
-        display_msg("DRAW");
+    if (result == '0')
+    {
+        result = get_result(*player, *opponent);
+        if (result == 'L') {
+            display_msg("LOSER");
+        } else if (result == 'W') {
+            display_msg("WINNER");
+            *win_count = *win_count + 1;
+        } else if (result == 'D') {
+            display_msg("DRAW");
+        } 
+        tinygl_update();
+    } else {
+        if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
+            result = '0';
+            tinygl_clear();
+            *counter = *counter +1;
+        }
     }
-    
-    if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
-        tinygl_clear();
-        return counter++;
-    }
-    return counter;
 }
 
 
@@ -138,18 +130,17 @@ int process_result_loop(int counter, char* result, int* win_count, char* player,
     @param chosen pointer to what value needs to be displayed in selection_loop*/
 int win_count_loop(int counter, int* win_count, char* player, char* opponent, char* chosen)
 {
-    navswitch_update();
-    if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
-        tinygl_clear();
 
-        if(winner(*win_count) == 1) {
-            counter++;
-        } else {
-            counter = 1;
-            *chosen = 0;
-            *player = '0';
-            *opponent = '0';
-        }
+    win_counter(*win_count);
+    if (*win_count == 4) {
+        display_msg("CONGRATULATIONS!");\
+        *win_count = -1;
+        counter++;
+    } else {
+        counter = 1;
+        *chosen = 0;
+        *player = '0';
+        *opponent = '0';
     }
     return counter;
 }
@@ -183,7 +174,8 @@ void initalise (void)
     pacer_init(PACER_RATE);
 
 } 
-            
+
+
 int main (void) 
 {
 
@@ -191,7 +183,6 @@ int main (void)
     int counter = 0;
     char player = '0';
     char opponent = '0';
-    char result = '0';
     char ch = '0';
     char chosen = 0;
     int win_count = -1;
@@ -216,7 +207,7 @@ int main (void)
         }
 
         if (counter == 3) {
-            counter = process_result_loop(counter, &result, &win_count, &player, &opponent);
+            process_result_loop(&counter, &win_count, &player, &opponent);
         }
 
         if (counter == 4) {
@@ -229,6 +220,5 @@ int main (void)
         
     }
     return 0;
-    
 }
 
