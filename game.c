@@ -10,6 +10,22 @@
  * @brief Looping the starting/ending message until Navswitch North is pressed 
  * @param counter Indicates what stage the program is on
  */
+#include "game.h"
+
+
+/*Initalise all components need to run the game*/
+void initalise (void)
+{
+    system_init();
+    ir_uart_init ();
+    button_init();
+    navswitch_init();
+    pacer_init(PACER_RATE);
+
+} 
+
+
+/* Looping the starting message until Navswitch North is pressed*/
 bool start_loop(void)
 {
     navswitch_update ();
@@ -69,7 +85,7 @@ bool send_recv_loop(char* opponent, char player)
         }
     }
 
-    if (button_push_event_p(0) || sending ==1) {
+    if (button_push_event_p(0) || sending == 1) {
         if (ir_uart_write_ready_p()) {
             sending = 0;
             ir_uart_putc (player);
@@ -124,9 +140,6 @@ bool process_result_loop(int* win_count, int* loss_count, char* player, char* op
  * @param opponent pointer to opponents selction
  * @param chosen pointer to what value needs to be displayed in selection_loop
  */
-
-/* 
-    */
 bool win_count_loop(int* win_count, int*loss_count, char* player, char* opponent, char* chosen)
 {
     ir_uart_putc ('X');
@@ -167,18 +180,6 @@ bool reset_loop(char* player, char* opponent, char* chosen)
     return false;
     
 }
-
-
-/*Initalise all components need to run the game*/
-void initalise (void)
-{
-    system_init();
-    ir_uart_init ();
-    button_init();
-    navswitch_init();
-    pacer_init(PACER_RATE);
-
-} 
 
 
 int main (void) 

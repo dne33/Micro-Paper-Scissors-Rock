@@ -2,6 +2,7 @@
 #define GAME_LOGIC_H
 
 #include "system.h"
+#include "navswitch.h"
 
 /* Returns the result of a RPS Battle.
     @param player character representaion of players choice
