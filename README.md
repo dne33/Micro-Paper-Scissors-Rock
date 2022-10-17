@@ -24,8 +24,10 @@ Rock, Paper, Scissors programmed on an AVR ATmega32 micro-controller.
 
 ## File Structure
     - `game.c`: Contains the main game task scheduling, logic and game phase tracking
-    - `game_logic.c`, `game_logic.h`: Contains all game logic operations (deciding winners and cycling through choices)
-    - `game_display.c`, `game_display.h`: Contains all game display operations (displaying messages and RPS choices)
+    - `game_logic.c`, `game_logic.h`: Contains all game logic operations 
+        (deciding winners and cycling through choices)
+    - `game_display.c`, `game_display.h`: Contains all game display operations 
+        (displaying messages and RPS choices)
     - `Makefile`: Contains the basic Makefile for game.c
 
 ## Usage
@@ -37,10 +39,12 @@ Run `make` and then `make program` to start playing!
 
 ## Game Play
 **Starting the Game**: There will be a loading screen being `PRESS UP TO START` press the navswitch up get past this message.
+
 **Note**: All messages displayed like this can be skipped by pressing up on the nav switch.
 
 
 **Hint**: You dont need your boards to be close before you send so make sure your opponent doesnt get a peak!
+
 **Choose your character**: After passing the start screen you will be presented with "R" for rock. Flick the nav switch left and right to cycle through youyr choices. To select a character press down on the navswitch to "Lock it in" a blue led should light up indicating you are ready to fight. 
  
 **Starting**: Once both players have chosen the item, make sure the boards are within IR range, and players should push the button next to the IR transmitter to compare the chosen items. only one person will need to send so click the button and hope you win.
