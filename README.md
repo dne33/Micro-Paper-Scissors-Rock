@@ -9,9 +9,9 @@ Rock, Paper, Scissors programmed on an AVR ATmega32 micro-controller.
 
 ## Setting up
 
-1. Clone the UCFK4 git repository: This contains all the necessary drivers and utilities to run the battleships application.
+1. Clone the UCFK4 git repository: This contains all the necessary drivers and utilities to run the game.
 ```
- git clone https://eng-git.canterbury.ac.nz/steve.weddell/ence260-ucfk4.git
+ git clone https://eng-git.canterbury.ac.nz/rmc84/ence260-ucfk4.git
 ```
 
 2. Clone our game: It needs to be cloned into the assignment directory in the ucfk4 folder.
