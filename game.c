@@ -12,7 +12,7 @@
 #include "tinygl.h"
 #include "button.h"
 #include "led.h"
-#include "../fonts/font5x5_1.h"
+#include "../../fonts/font5x5_1.h"
 #include "game_display.h"
 #include "game_logic.h"
 

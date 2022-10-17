@@ -1,4 +1,10 @@
 
+/** @file   game_display.c
+    @author  Matt Lane, Daniel Neal
+    @date    13 October 2022
+    @brief   Rock,Paper,Scissors display class
+*/
+
 #include "game_display.h"
 
 /* Display single character.
