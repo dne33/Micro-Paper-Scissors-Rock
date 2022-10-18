@@ -5,10 +5,13 @@
 */
 #include "game_logic.h"
 
-/* Returns the result of a RPS Battle.
-    @param player character representaion of players choice
-    @param opponent character representaion of opponents choice */
-char get_result(char player, char opponent) 
+/**
+ * @brief computes the result of a RPS Battle.
+ * @param player character representaion of players choice
+ * @param opponent character representaion of opponents choice
+ * @return result of the interaction.
+ */
+char get_result (char player, char opponent) 
 {
     char result = '0';
     if (opponent == player) {
@@ -38,10 +41,13 @@ char get_result(char player, char opponent)
     return '0';
 }
 
-/* Allows selection of Rock,Paper, or Scissors.
-    @param player character representaion of players choice
-    @param index  the index of the rps array to display */
-char select_rps(char player, int index) 
+/**
+ * @brief Allows selection of Rock,Paper, or Scissors
+ * @param player character representaion of players choice
+ * @param index  the index of the rps array to display 
+ * @return Either the player or the index of the RPS to be displayed
+ */
+char select_rps (char player, int index) 
 {
     char rps[3] = {'R', 'P', 'S'};
     navswitch_update ();

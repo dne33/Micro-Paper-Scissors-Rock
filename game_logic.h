@@ -10,15 +10,21 @@
 #include "system.h"
 #include "navswitch.h"
 
-/* Returns the result of a RPS Battle.
-    @param player character representaion of players choice
-    @param opponent character representaion of opponents choice */
-char get_result(char player, char opponent);
+/**
+ * @brief Allows selection of Rock,Paper, or Scissors
+ * @param player character representaion of players choice
+ * @param index  the index of the rps array to display 
+ * @return Either the player or the index of the RPS to be displayed
+ */
+char get_result (char player, char opponent);
 
-/* Allows selection of Rock,Paper, or Scissors.
-    @param player character representaion of players choice
-    @param index  the index of the rps array to display */
-char select_rps(char player, int index);
+/**
+ * @brief Allows selection of Rock,Paper, or Scissors
+ * @param player character representaion of players choice
+ * @param index  the index of the rps array to display 
+ * @return Either the player or the index of the RPS to be displayed
+ */
+char select_rps (char player, int index);
 
 #endif //GAME_LOGIC
 
