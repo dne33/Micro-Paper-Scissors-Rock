@@ -76,7 +76,7 @@ bool send_recv_loop (char* opponent, char player)
     if (ir_uart_read_ready_p ()) {
         ch = ir_uart_getc ();
         if (ch == 'R' || ch == 'P' || ch == 'S' ) {
-            if (ir_uart_write_ready_p ()) { // Ensure both layers have sent and recv 
+            if (ir_uart_write_ready_p ()) { // Ensure both players have sent and recv 
                 ir_uart_putc (player);
                 *opponent = ch;
                 ch = '0';
@@ -203,22 +203,22 @@ int main (void)
     {
         pacer_wait ();
         tinygl_update ();
-        if (game_state==0) { // Initial screen
+        if (game_state == 0) { // Initial screen
             if (start_loop ()) {
                 game_state ++;
             }
         }
-        if (game_state == 1) { //selecting a character
+        if (game_state == 1) { // Selecting a character
             if (select_character_loop (&player, &chosen)) {
                 game_state++;
             }
         }
-        if (game_state == 2) { // sending and recieving chosen characters
+        if (game_state == 2) { // Sending and recieving chosen characters
             if (send_recv_loop (&opponent, player)) {
                 game_state++;
             }
         }
-        if (game_state == 3) { // process a win/loss/draw
+        if (game_state == 3) { // Process a win/loss/draw
             if (process_result_loop (&win_count, &loss_count, &player, &opponent)) {
                 game_state++;
             }

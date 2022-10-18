@@ -35,9 +35,9 @@ void display_msg (char* message)
  * @brief Display the win count using a row of LED.
  * @param win_count current number of wins by player 
  */
-void win_counter(int win_count)
+void win_counter (int win_count)
 {
     tinygl_point_t point = {win_count,6};
-    tinygl_pixel_set(point,1);
-    tinygl_update();
+    tinygl_pixel_set (point,1);
+    tinygl_update ();
 }
