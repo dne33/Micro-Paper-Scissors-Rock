@@ -19,7 +19,7 @@
 
 
 /**
- * @brief Looping the starting/ending message until Navswitch North is pressed 
+ * @brief Initialisation functions
  */
 void initalise (void);
 
@@ -79,6 +79,12 @@ bool win_count_loop (int* win_count, int*loss_count, char* player, char* opponen
  * @return boolean if the navswitch is pressed up 
 */
 bool reset_loop (char* player, char* opponent, char* chosen);
+
+/**
+ * @brief main loop of all the different game states 
+ * @return int 0
+ */
+int main (void);
 
 
 

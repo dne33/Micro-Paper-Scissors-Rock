@@ -6,9 +6,8 @@
 
 #include "game.h"
 
-
 /**
- * @brief Looping the starting/ending message until Navswitch North is pressed 
+ * @brief Initialisation functions
  */
 void initalise (void)
 {
@@ -50,7 +49,7 @@ bool select_character_loop (char* player, char* chosen )
         display_character ('P');
     } else if (*chosen == 2) {
         display_character ('S');
-    } else { 
+    } else { // Player has "Locked in" their choice 
         *player = *chosen;
         led_set (0,1);
         tinygl_clear ();
@@ -77,7 +76,7 @@ bool send_recv_loop (char* opponent, char player)
     if (ir_uart_read_ready_p ()) {
         ch = ir_uart_getc ();
         if (ch == 'R' || ch == 'P' || ch == 'S' ) {
-            if (ir_uart_write_ready_p ()) {
+            if (ir_uart_write_ready_p ()) { // Ensure both layers have sent and recv 
                 ir_uart_putc (player);
                 *opponent = ch;
                 ch = '0';
@@ -134,7 +133,7 @@ bool process_result_loop (int* win_count, int* loss_count, char* player, char* o
 }
 
 /**
- * @brief Loop to process the result and check win and loss counters
+ * @brief Loop to process the result and check win and loss game_states
  * @param win_count pointer to number of wins the player has
  * @param loss_count pointer to number of losses the player has
  * @param player the players selection 
@@ -145,7 +144,7 @@ bool process_result_loop (int* win_count, int* loss_count, char* player, char* o
 bool win_count_loop (int* win_count, int*loss_count, char* player, char* opponent, char* chosen)
 {
     ir_uart_putc ('X');
-    win_counter (*win_count);
+    win_game_state (*win_count);
     if (*win_count == 4) {
         display_msg ("CONGRATULATIONS!");
         *win_count = -1;
@@ -192,49 +191,51 @@ bool reset_loop (char* player, char* opponent, char* chosen)
 int main (void) 
 {
     initalise ();
-    int counter = 0;
+    int game_state = 0;
     char player = '0';
     char opponent = '0';
     char chosen = 0;
     int win_count = -1;
     int loss_count = 0;
     display_msg ("PUSH UP TO START");
+
     while (1)
     {
         pacer_wait ();
         tinygl_update ();
-        if (counter==0) {
+        if (game_state==0) { // Initial screen
             if (start_loop ()) {
-                counter ++;
+                game_state ++;
             }
         }
-        if (counter == 1) {  
+        if (game_state == 1) { //selecting a character
             if (select_character_loop (&player, &chosen)) {
-                counter++;
+                game_state++;
             }
         }
-        if (counter == 2) {
+        if (game_state == 2) { // sending and recieving chosen characters
             if (send_recv_loop (&opponent, player)) {
-                counter++;
+                game_state++;
             }
         }
-        if (counter == 3) {
+        if (game_state == 3) { // process a win/loss/draw
             if (process_result_loop (&win_count, &loss_count, &player, &opponent)) {
-                counter++;
+                game_state++;
             }
         }
 
-        if (counter == 4) {
+        if (game_state == 4) { // Check win/loss counter for overall win/loss
             if (win_count_loop (&win_count, &loss_count, &player, &opponent, &chosen)) {
-                counter++;
+                game_state++;
             } else {
-                counter = 1;
+                game_state = 1;
             }
         }
 
-        if (counter == 5) {
+        if (game_state == 5) { /*If overall win/loss occurs reset fully 
+                                and allow for one more text scroll*/ 
             if (reset_loop (&player, &opponent, &chosen)) {
-                counter = 1;
+                game_state = 1;
             }
         }
     }
