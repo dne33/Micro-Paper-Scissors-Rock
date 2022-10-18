@@ -1,3 +1,9 @@
+/** @file   game_logic.h
+    @author  Matt Lane, Daniel Neal
+    @date    13 October 2022
+    @brief   Rock,Paper,Scissors game
+*/
+
 #ifndef GAME_LOGIC_H
 #define GAME_LOGIC_H
 

@@ -1,3 +1,8 @@
+/** @file   game_display.c
+    @author  Matt Lane, Daniel Neal
+    @date    13 October 2022
+    @brief   Rock,Paper,Scissors game
+*/
 #ifndef GAME_DISPLAY_H
 #define GAME_DISPLAY_H
 

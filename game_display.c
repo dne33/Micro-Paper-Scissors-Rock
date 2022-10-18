@@ -1,4 +1,3 @@
-
 /** @file   game_display.c
     @author  Matt Lane, Daniel Neal
     @date    13 October 2022

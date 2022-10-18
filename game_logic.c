@@ -1,3 +1,8 @@
+/** @file   game_logic.c
+    @author  Matt Lane, Daniel Neal
+    @date    13 October 2022
+    @brief   Rock,Paper,Scissors game
+*/
 #include "game_logic.h"
 
 /* Returns the result of a RPS Battle.
