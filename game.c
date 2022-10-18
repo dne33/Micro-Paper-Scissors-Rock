@@ -4,7 +4,16 @@
     @brief   Rock,Paper,Scissors game
 */
 
-#include "game.h"
+#include "system.h"
+#include "pacer.h"
+#include "navswitch.h"
+#include "ir_uart.h"
+#include "tinygl.h"
+#include "button.h"
+#include "led.h"
+#include "../../fonts/font5x5_1.h"
+#include "game_display.h"
+#include "game_logic.h"
 
 /**
  * @brief Initialisation functions
