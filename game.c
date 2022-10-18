@@ -144,7 +144,7 @@ bool process_result_loop (int* win_count, int* loss_count, char* player, char* o
 bool win_count_loop (int* win_count, int*loss_count, char* player, char* opponent, char* chosen)
 {
     ir_uart_putc ('X');
-    win_game_state (*win_count);
+    win_counter (*win_count);
     if (*win_count == 4) {
         display_msg ("CONGRATULATIONS!");
         *win_count = -1;
