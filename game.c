@@ -9,7 +9,7 @@
 /**
  * @brief Initialisation functions
  */
-void initalise (void)
+static void initalise (void)
 {
     system_init ();
     ir_uart_init ();
@@ -23,7 +23,7 @@ void initalise (void)
  * @brief Looping the starting message until Navswitch North is pressed
  * @return boolean if navswitch up is pressed
  */
-bool start_loop (void)
+static bool start_loop (void)
 {
     navswitch_update ();
     if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
@@ -40,7 +40,7 @@ bool start_loop (void)
  * @param chosen chosen pointer to put the current character into (if not selected)
  * @return boolean if the character is selected
  */
-bool select_character_loop (char* player, char* chosen )
+static bool select_character_loop (char* player, char* chosen )
 {
     *chosen = select_rps (*player, *chosen); 
     if  (*chosen == 0) {
@@ -67,7 +67,7 @@ bool select_character_loop (char* player, char* chosen )
  * @param player the players selection
  * @return boolean if the player has both sent and recieved a char
  */
-bool send_recv_loop (char* opponent, char player)
+static bool send_recv_loop (char* opponent, char player)
 {
     static int sending = 0;
     static char ch = '0';
@@ -105,7 +105,7 @@ bool send_recv_loop (char* opponent, char player)
  * @param opponent pointer to opponents selction
  * @return boolean if navswitch up is pressed
  */   
-bool process_result_loop (int* win_count, int* loss_count, char* player, char* opponent)
+static bool process_result_loop (int* win_count, int* loss_count, char* player, char* opponent)
 {
     static char result = '0';
     navswitch_update ();
@@ -141,7 +141,7 @@ bool process_result_loop (int* win_count, int* loss_count, char* player, char* o
  * @param chosen pointer to what value needs to be displayed in selection_loop
  * @return boolean if the player needs to fully reset the game
  */
-bool win_count_loop (int* win_count, int*loss_count, char* player, char* opponent, char* chosen)
+static bool win_count_loop (int* win_count, int*loss_count, char* player, char* opponent, char* chosen)
 {
     ir_uart_putc ('X');
     win_counter (*win_count);
@@ -171,7 +171,7 @@ bool win_count_loop (int* win_count, int*loss_count, char* player, char* opponen
  * @param chosen pointer to what value needs to be displayed in selection_loop
  * @return boolean if the navswitch is pressed up 
 */
-bool reset_loop (char* player, char* opponent, char* chosen)
+static bool reset_loop (char* player, char* opponent, char* chosen)
 {
     navswitch_update ();
     if (navswitch_push_event_p (NAVSWITCH_NORTH)) {

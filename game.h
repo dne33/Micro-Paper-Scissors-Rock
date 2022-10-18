@@ -21,13 +21,13 @@
 /**
  * @brief Initialisation functions
  */
-void initalise (void);
+static void initalise (void);
 
 /**
  * @brief Looping the starting message until Navswitch North is pressed
  * @return boolean if navswitch up is pressed
  */
-bool start_loop (void);
+static bool start_loop (void);
 
 /**
  * @brief Tidy up chosen being used as both an int and a char 
@@ -35,7 +35,7 @@ bool start_loop (void);
  * @param chosen chosen pointer to put the current character into (if not selected)
  * @return boolean if the character is selected
  */
-bool select_character_loop (char* player, char* chosen);
+static bool select_character_loop (char* player, char* chosen);
 
 
 /**
@@ -44,7 +44,7 @@ bool select_character_loop (char* player, char* chosen);
  * @param chosen chosen pointer to put the current character into (if not selected)
  * @return boolean if the character is selected
  */
-bool send_recv_loop (char* opponent, char player);
+static bool send_recv_loop (char* opponent, char player);
 
 
 
@@ -56,7 +56,7 @@ bool send_recv_loop (char* opponent, char player);
  * @param opponent pointer to opponents selction
  * @return boolean if navswitch up is pressed
  */   
-bool process_result_loop (int* win_count, int* loss_count, char* player, char* opponent);
+static bool process_result_loop (int* win_count, int* loss_count, char* player, char* opponent);
 
 
 /**
@@ -68,7 +68,7 @@ bool process_result_loop (int* win_count, int* loss_count, char* player, char* o
  * @param chosen pointer to what value needs to be displayed in selection_loop
  * @return boolean if the player needs to fully reset the game
  */
-bool win_count_loop (int* win_count, int*loss_count, char* player, char* opponent, char* chosen);
+static bool win_count_loop (int* win_count, int*loss_count, char* player, char* opponent, char* chosen);
 
 
 /** 
@@ -78,7 +78,7 @@ bool win_count_loop (int* win_count, int*loss_count, char* player, char* opponen
  * @param chosen pointer to what value needs to be displayed in selection_loop
  * @return boolean if the navswitch is pressed up 
 */
-bool reset_loop (char* player, char* opponent, char* chosen);
+static bool reset_loop (char* player, char* opponent, char* chosen);
 
 /**
  * @brief main loop of all the different game states 
